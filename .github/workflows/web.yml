@@ -13,10 +13,31 @@ jobs:
       group: ${{ github.workflow }}-${{ github.ref }}
     steps:
       - uses: actions/checkout@v2
-      - uses: actions-rs/cargo@v1
+      - uses: actions-rs/toolchain@v1
         with:
-          command: install
-          args: trunk
+          toolchain: stable
+          target: wasm32-unknown-unknown
+          override: true
+          profile: minimal
+
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: cargo-${{ runner.os }}-${{ hashFiles('**/Cargo.toml') }}
+          restore-keys: |
+            cargo-${{ runner.os }}-
+      - uses: jetli/trunk-action@v0.1.0
+        with:
+          # Optional version of trunk to install(eg. 'v0.8.1', 'latest')
+          version: 'latest'
+
+      - uses: jetli/wasm-bindgen-action@v0.1.0
+        with:
+          # Optional version of wasm-bindgen to install(eg. '0.2.68', 'latest')
+          version: 'latest'
 
       - name: Build
         run: trunk build --release
