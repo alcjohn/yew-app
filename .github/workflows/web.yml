@@ -40,7 +40,7 @@ jobs:
           version: 'latest'
 
       - name: Build
-        run: trunk build --release
+        run: trunk build --release --public-url /yew-app
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
